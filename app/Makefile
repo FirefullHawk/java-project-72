@@ -1,5 +1,5 @@
 setup:
-	gradle wrapper --gradle-version 7.2
+	gradle wrapper --gradle-version 8.3
 
 clean:
 	./gradlew clean
@@ -30,5 +30,11 @@ report:
 
 check-updates:
 	./gradlew dependencyUpdates
+
+image-build:
+	docker build -t hexletcomponents/java-javalin-blog:latest .
+
+image-push:
+	docker push hexletcomponents/java-javalin-blog:latest
 
 .PHONY: build
