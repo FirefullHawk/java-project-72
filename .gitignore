@@ -19,7 +19,7 @@ out/
 app.iml
 
 ### Jte generated files ###
-.jte-classes
+jte-classes/
 
 ### Eclipse ###
 .apt_generated
