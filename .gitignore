@@ -18,6 +18,9 @@ out/
 !**/src/test/**/out/
 app.iml
 
+### Jte generated files ###
+.jte-classes
+
 ### Eclipse ###
 .apt_generated
 .classpath
