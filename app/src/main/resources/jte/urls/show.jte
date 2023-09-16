@@ -3,11 +3,12 @@
 @param UrlPage page
 
 @template.layout.page(
+page = page,
 content = @`
     <div class="container-lg mt-5">
       <h1>Сайт ${page.getUrl().getName()}</h1>
 
-      <table class="table table-bordered table-hover mt-3">
+      <table class="table table-bordered table-hover mt-3 text-truncate">
         <tbody>
           <tr>
             <td>ID</td>
@@ -56,13 +57,13 @@ content = @`
 
       <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center mt-5">
-          <li class="page-item disabled">
+          <li class="page-item ${page.getUrlCheck().size() > 5 ? "active" : "disabled"}">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() > 1? page.getPageNumber() - 1 : 1}">Previous</a>
           </li>
           <li class="page-item active">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
           </li>
-          <li class="page-item disabled">
+          <li class="page-item ${page.getUrlCheck().size() > 5 ? "active" : "disabled"}">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() + 1}">Next</a>
           </li>
         </ul>

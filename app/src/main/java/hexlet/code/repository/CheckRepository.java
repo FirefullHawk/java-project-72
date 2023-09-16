@@ -31,8 +31,8 @@ public class CheckRepository extends BaseRepository {
         }
     }
 
-    public static Optional<UrlCheck> find(Long id) throws SQLException {
-        var sql = "SELECT * FROM urlChecks WHERE id = ?";
+    public static Optional<UrlCheck> ByUrlId(Long id) throws SQLException {
+        var sql = "SELECT * FROM urlChecks WHERE urlId = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -74,7 +74,7 @@ public class CheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> getEntitiesById(Long inputId) throws SQLException {
+    public static List<UrlCheck> getEntitiesByUrlId(Long inputId) throws SQLException {
         var sql = "SELECT * FROM urlChecks WHERE urlId = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {

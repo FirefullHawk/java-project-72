@@ -45,7 +45,7 @@ public class UrlController {
 
             if (UrlsRepository.findByName(url.getName()).isEmpty()) {
                 UrlsRepository.save(url);
-                ctx.sessionAttribute("flash", "Сайт был успешно добавлен!");
+                ctx.sessionAttribute("flash", "Сайт успешно добавлен");
                 ctx.sessionAttribute("flash-type", "success");
                 ctx.redirect(NamedRoutes.urlsPath());
             } else {
@@ -69,7 +69,7 @@ public class UrlController {
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
         final long urlPerPage = 5;
-        var urlsCheck = CheckRepository.getEntitiesById(id)
+        var urlsCheck = CheckRepository.getEntitiesByUrlId(id)
                 .stream()
                 .skip((pageNumber - 1) * urlPerPage)
                 .limit(urlPerPage)
@@ -96,7 +96,7 @@ public class UrlController {
         var urlToCheck = new UrlCheck(status, title, h1, description, id);
         CheckRepository.save(urlToCheck);
 
-        ctx.sessionAttribute("flash", "Сайт был успешно добавлен!");
+        ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
         ctx.sessionAttribute("flash-type", "success");
 
         ctx.redirect(NamedRoutes.urlPath(id));
