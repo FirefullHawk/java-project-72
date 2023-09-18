@@ -9,17 +9,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class CheckRepository extends BaseRepository {
+    private static final Integer INDEX_ONE = 1;
+    private static final Integer INDEX_TWO = 2;
+    private static final Integer INDEX_THREE = 3;
+    private static final Integer INDEX_FOUR = 4;
+    private static final Integer INDEX_FIVE = 5;
+    private static final Integer INDEX_SIX = 6;
+
     public static void save(UrlCheck url) throws SQLException {
-        String sql = "INSERT INTO urlChecks (statusCode, title, h1, description, urlId, created_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO urlChecks (statusCode, title, h1, description, urlId, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setLong(1, url.getStatusCode());
-            preparedStatement.setString(2, url.getTitle());
-            preparedStatement.setString(3, url.getH1());
-            preparedStatement.setString(4, url.getDescription());
-            preparedStatement.setLong(5, url.getUrlId());
-            preparedStatement.setTimestamp(6, url.getCreatedAt());
+            preparedStatement.setLong(INDEX_ONE, url.getStatusCode());
+            preparedStatement.setString(INDEX_TWO, url.getTitle());
+            preparedStatement.setString(INDEX_THREE, url.getH1());
+            preparedStatement.setString(INDEX_FOUR, url.getDescription());
+            preparedStatement.setLong(INDEX_FIVE, url.getUrlId());
+            preparedStatement.setTimestamp(INDEX_SIX, url.getCreatedAt());
 
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
@@ -31,7 +38,7 @@ public class CheckRepository extends BaseRepository {
         }
     }
 
-    public static Optional<UrlCheck> ByUrlId(Long id) throws SQLException {
+    public static Optional<UrlCheck> byUrlId(Long id) throws SQLException {
         var sql = "SELECT * FROM urlChecks WHERE urlId = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {

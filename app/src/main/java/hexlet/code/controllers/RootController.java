@@ -1,6 +1,5 @@
 package hexlet.code.controllers;
 
-import hexlet.code.utils.NamedRoutes;
 import io.javalin.http.Context;
 
 public class RootController {

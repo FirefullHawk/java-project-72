@@ -2,14 +2,12 @@ package hexlet.code.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
 public final class UrlCheck {
 
     private long id;

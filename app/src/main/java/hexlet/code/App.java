@@ -53,7 +53,8 @@ public final class App {
         hikariConfig.setJdbcUrl("jdbc:h2:mem:hexlet;DB_CLOSE_DELAY=-1;");
 
         var dataSource = new HikariDataSource(hikariConfig);
-        var url = App.class.getClassLoader().getResource("h2/table.sql");
+        var url = isProduction() ? App.class.getClassLoader().getResource("postgres/table.sql")
+                : App.class.getClassLoader().getResource("h2/table.sql");
         var file = new File(url.getFile());
         var sql = Files.lines(file.toPath())
                 .collect(Collectors.joining("\n"));

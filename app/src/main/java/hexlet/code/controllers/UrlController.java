@@ -25,7 +25,7 @@ import static hexlet.code.utils.UrlBuild.urlBuild;
 
 public class UrlController {
 
-    public static void build (Context ctx) {
+    public static void build(Context ctx) {
         var page = new UrlBuildPage();
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
@@ -53,8 +53,7 @@ public class UrlController {
                 ctx.sessionAttribute("flash-type", "info");
                 ctx.redirect(NamedRoutes.urlsPath());
             }
-        }
-        catch (MalformedURLException | URISyntaxException e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.buildPath());
@@ -111,9 +110,13 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        var page = new UrlsPage(urls, pageNumber);
+        var urlChecks = CheckRepository.getEntities();
+
+        var page = new UrlsPage(urls, urlChecks, pageNumber);
+
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+
         ctx.render("urls/index.jte", Collections.singletonMap("page", page));
     }
 }

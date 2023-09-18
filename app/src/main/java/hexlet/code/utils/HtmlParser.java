@@ -4,7 +4,7 @@ import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class HtmlParser {
+public final class HtmlParser {
     private final String urlToParser;
 
     public HtmlParser(String urlToParser) {
