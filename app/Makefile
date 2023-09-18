@@ -16,9 +16,6 @@ install:
 start-dist:
 	APP_ENV=production ./build/install/java-javalin-blog/bin/java-javalin-blog
 
-generate-migrations:
-	./gradlew generateMigrations
-
 lint:
 	./gradlew checkstyleMain checkstyleTest
 
