@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := build-run
+
 setup:
 	gradle wrapper --gradle-version 8.3
 
@@ -29,9 +31,9 @@ check-updates:
 	./gradlew dependencyUpdates
 
 image-build:
-	docker build -t hexletcomponents/java-javalin-blog:latest .
+	docker build -t firefullhawk/java-project-72:latest .
 
 image-push:
-	docker push hexletcomponents/java-javalin-blog:latest
+	docker push firefullhawk/java-project-72:latest
 
 .PHONY: build
