@@ -52,7 +52,9 @@ public final class App {
 
         var dataSource = new HikariDataSource(hikariConfig);
 
-        String sql = getContentFromStream(getFileFromResourceAsStream());
+        String file = "schema.sql";
+
+        String sql = getContentFromStream(getFileFromResourceAsStream(file));
 
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
@@ -83,9 +85,9 @@ public final class App {
         app.start(getPort());
     }
 
-    private static InputStream getFileFromResourceAsStream() {
+    private static InputStream getFileFromResourceAsStream(String file) {
         ClassLoader classLoader = App.class.getClassLoader();
-        return classLoader.getResourceAsStream("schema.sql");
+        return classLoader.getResourceAsStream(file);
     }
 
     private static String getContentFromStream(InputStream is) throws IOException {
