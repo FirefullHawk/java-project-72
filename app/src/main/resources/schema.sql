@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS urls;
 create table urls (
   id                            SERIAL PRIMARY KEY,
   name                          varchar(255) not null,
-  created_at                    timestamp not null,
+  created_at                    timestamp not null
 );
 
 DROP TABLE IF EXISTS url_checks;
@@ -15,5 +15,5 @@ create table url_checks (
   h1                            varchar(255),
   description                   text,
   url_id                        int,
-  created_at                    timestamp not null,
+  created_at                    timestamp not null
 );
