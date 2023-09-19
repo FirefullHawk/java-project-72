@@ -1,5 +1,4 @@
 @import hexlet.code.dto.urls.UrlsPage
-@import hexlet.code.model.UrlCheck
 @import hexlet.code.utils.NamedRoutes
 @param UrlsPage page
 
@@ -23,12 +22,12 @@ content = @`
           <td class="col-1">${url.getId()}</td>
           <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
           <td class="col-2">
-              @if (!page.getUrlChecks().isEmpty())
-              ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getCreatedAt().toString().substring(0, 16)}
-              @endif
+            @if (page.getUrlChecks().stream().anyMatch(urlCheck -> urlCheck.getUrlId() == url.getId()))
+            ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getCreatedAt().toString().substring(0,16)}
+            @endif
           </td>
           <td class="col-1">
-            @if (!page.getUrlChecks().isEmpty())
+            @if (page.getUrlChecks().stream().anyMatch(urlCheck -> urlCheck.getUrlId() == url.getId()))
             ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getStatusCode()}
             @endif
           </td>
