@@ -17,7 +17,7 @@ public class CheckRepository extends BaseRepository {
     private static final Integer INDEX_SIX = 6;
 
     public static void save(UrlCheck url) throws SQLException {
-        String sql = "INSERT INTO urlChecks (status_code, title, h1, description, url_id, created_at) "
+        String sql = "INSERT INTO url_checks (status_code, title, h1, description, url_id, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -39,7 +39,7 @@ public class CheckRepository extends BaseRepository {
     }
 
     public static Optional<UrlCheck> byUrlId(Long id) throws SQLException {
-        var sql = "SELECT * FROM urlChecks WHERE url_id = ? ORDER BY id DESC";
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -60,7 +60,7 @@ public class CheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> getEntities() throws SQLException {
-        var sql = "SELECT * FROM urlChecks ORDER BY id DESC";
+        var sql = "SELECT * FROM url_checks ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
@@ -82,7 +82,7 @@ public class CheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> getEntitiesByUrlId(Long inputId) throws SQLException {
-        var sql = "SELECT * FROM urlChecks WHERE url_id = ? ORDER BY id DESC";
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, inputId);
