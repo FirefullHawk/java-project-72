@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.utils.Helper;
 import hexlet.code.utils.NamedRoutes;
 
 import gg.jte.ContentType;
@@ -14,8 +13,13 @@ import gg.jte.resolve.ResourceCodeResolver;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 
 public final class App {
 
@@ -48,11 +52,11 @@ public final class App {
 
         var dataSource = new HikariDataSource(hikariConfig);
 
-        var schemaSql = Helper.getSql("schema.sql");
+        String sql = getContentFromStream(getFileFromResourceAsStream());
 
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
-            statement.execute(schemaSql);
+            statement.execute(sql);
         }
         BaseRepository.dataSource = dataSource;
 
@@ -60,8 +64,11 @@ public final class App {
             if (!isProduction()) {
                 config.plugins.enableDevLogging();
             }
-            JavalinJte.init(createTemplateEngine());
         });
+
+        app.before(ctx -> ctx.contentType("text/html; charset=utf-8"));
+
+        JavalinJte.init(createTemplateEngine());
 
         app.get(NamedRoutes.rootPath(), RootController::index);
         app.get(NamedRoutes.urlsPath(), UrlController::index);
@@ -74,5 +81,16 @@ public final class App {
     public static void main(String[] args) throws SQLException, IOException {
         Javalin app = getApp();
         app.start(getPort());
+    }
+
+    private static InputStream getFileFromResourceAsStream() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        return classLoader.getResourceAsStream("schema.sql");
+    }
+
+    private static String getContentFromStream(InputStream is) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 }
