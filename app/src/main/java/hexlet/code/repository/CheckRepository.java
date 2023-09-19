@@ -17,7 +17,7 @@ public class CheckRepository extends BaseRepository {
     private static final Integer INDEX_SIX = 6;
 
     public static void save(UrlCheck url) throws SQLException {
-        String sql = "INSERT INTO urlChecks (statusCode, title, h1, description, url_id, created_at) "
+        String sql = "INSERT INTO urlChecks (status_code, title, h1, description, url_id, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -45,8 +45,8 @@ public class CheckRepository extends BaseRepository {
             stmt.setLong(1, id);
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                var statusCode = resultSet.getLong("statusCode");
-                var title = resultSet.getString("statusCode");
+                var statusCode = resultSet.getLong("status_code");
+                var title = resultSet.getString("title");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
                 var urlId = resultSet.getLong("url_id");
@@ -67,7 +67,7 @@ public class CheckRepository extends BaseRepository {
             var result = new ArrayList<UrlCheck>();
             while (resultSet.next()) {
                 var id = resultSet.getLong("id");
-                var statusCode = resultSet.getLong("statusCode");
+                var statusCode = resultSet.getLong("status_code");
                 var title = resultSet.getString("title");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
@@ -90,7 +90,7 @@ public class CheckRepository extends BaseRepository {
             var result = new ArrayList<UrlCheck>();
             while (resultSet.next()) {
                 var id = resultSet.getLong("id");
-                var statusCode = resultSet.getLong("statusCode");
+                var statusCode = resultSet.getLong("status_code");
                 var title = resultSet.getString("title");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
