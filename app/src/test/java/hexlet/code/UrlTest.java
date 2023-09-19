@@ -44,18 +44,10 @@ public final class UrlTest {
 
         String examFile = getDataFromFile(getAbsolutePath(pathToFile));
 
-        String pathToEmptyFile = "./src/test/resources/exampleDomain.html";
-
-        String emptyFile = getDataFromFile(getAbsolutePath(pathToEmptyFile));
-
         MockResponse responseExam = new MockResponse()
                 .setBody(examFile);
 
-        MockResponse responseEmpty = new MockResponse().
-                setBody(emptyFile);
-
         mockServer.enqueue(responseExam);
-        mockServer.enqueue(responseEmpty);
         mockServer.start();
     }
 

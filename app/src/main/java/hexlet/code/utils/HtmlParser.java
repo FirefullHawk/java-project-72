@@ -12,8 +12,13 @@ public final class HtmlParser {
     }
 
     private Document parsedHtmlBody() {
+        final int connectionTime = 8000;
+        final int socketTime = 8000;
+
         String parsedHtml = Unirest.get(this.urlToParser)
                 .header("Accept", "text/html")
+                .connectTimeout(connectionTime)
+                .socketTimeout(socketTime)
                 .asString()
                 .getBody();
         Unirest.shutDown();
