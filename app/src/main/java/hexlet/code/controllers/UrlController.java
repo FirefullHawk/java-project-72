@@ -75,7 +75,11 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        var page = new UrlPage(url, urlsCheck, pageNumber);
+        String conditionNext = CheckRepository.getEntities().size() > pageNumber * urlPerPage
+                ? "active" : "disabled";
+        String conditionBack = pageNumber > 1 ? "active" : "disabled";
+
+        var page = new UrlPage(url, urlsCheck, pageNumber, conditionNext, conditionBack);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
@@ -110,7 +114,7 @@ public class UrlController {
 
     public static void index(Context ctx) throws SQLException {
         var pageNumber = ctx.queryParamAsClass("page", long.class).getOrDefault(1L);
-        final long urlPerPage = 5;
+        final long urlPerPage = 10;
         var urls = UrlsRepository.getEntities()
                 .stream()
                 .skip((pageNumber - 1) * urlPerPage)
@@ -119,7 +123,10 @@ public class UrlController {
 
         var urlChecks = CheckRepository.getEntities();
 
-        var page = new UrlsPage(urls, urlChecks, pageNumber);
+        String conditionNext = UrlsRepository.getEntities().size() > urlPerPage * pageNumber ? "active" : "disabled";
+        String conditionBack = pageNumber > 1 ? "active" : "disabled";
+
+        var page = new UrlsPage(urls, urlChecks, pageNumber, conditionNext, conditionBack);
 
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));

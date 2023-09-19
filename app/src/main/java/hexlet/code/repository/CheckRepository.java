@@ -17,7 +17,7 @@ public class CheckRepository extends BaseRepository {
     private static final Integer INDEX_SIX = 6;
 
     public static void save(UrlCheck url) throws SQLException {
-        String sql = "INSERT INTO urlChecks (statusCode, title, h1, description, urlId, created_at) "
+        String sql = "INSERT INTO urlChecks (statusCode, title, h1, description, url_id, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -39,7 +39,7 @@ public class CheckRepository extends BaseRepository {
     }
 
     public static Optional<UrlCheck> byUrlId(Long id) throws SQLException {
-        var sql = "SELECT * FROM urlChecks WHERE urlId = ? ORDER BY id DESC";
+        var sql = "SELECT * FROM urlChecks WHERE url_id = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
@@ -49,7 +49,7 @@ public class CheckRepository extends BaseRepository {
                 var title = resultSet.getString("statusCode");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
-                var urlId = resultSet.getLong("urlId");
+                var urlId = resultSet.getLong("url_id");
                 var createdAt = resultSet.getTimestamp("created_at");
                 var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
                 urlCheck.setId(id);
@@ -71,7 +71,7 @@ public class CheckRepository extends BaseRepository {
                 var title = resultSet.getString("title");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
-                var urlId = resultSet.getLong("urlId");
+                var urlId = resultSet.getLong("url_id");
                 var createdAt = resultSet.getTimestamp("created_at");
                 var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
                 urlCheck.setId(id);
@@ -82,7 +82,7 @@ public class CheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> getEntitiesByUrlId(Long inputId) throws SQLException {
-        var sql = "SELECT * FROM urlChecks WHERE urlId = ? ORDER BY id DESC";
+        var sql = "SELECT * FROM urlChecks WHERE url_id = ? ORDER BY id DESC";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, inputId);
@@ -94,7 +94,7 @@ public class CheckRepository extends BaseRepository {
                 var title = resultSet.getString("title");
                 var h1 = resultSet.getString("h1");
                 var description = resultSet.getString("description");
-                var urlId = resultSet.getLong("urlId");
+                var urlId = resultSet.getLong("url_id");
                 var createdAt = resultSet.getTimestamp("created_at");
                 var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
                 urlCheck.setId(id);

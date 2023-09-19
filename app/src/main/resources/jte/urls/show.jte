@@ -57,13 +57,13 @@ content = @`
 
       <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center mt-5">
-          <li class="page-item ${page.getUrlCheck().size() > 5 ? "active" : "disabled"}">
+          <li class="page-item ${page.getConditionPagingBack()}">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() > 1? page.getPageNumber() - 1 : 1}">Previous</a>
           </li>
           <li class="page-item active">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
           </li>
-          <li class="page-item ${page.getUrlCheck().size() > 5 ? "active" : "disabled"}">
+          <li class="page-item ${page.getConditionPagingNext()}">
             <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() + 1}">Next</a>
           </li>
         </ul>

@@ -14,4 +14,6 @@ public class UrlPage extends BasePage {
     private Url url;
     private List<UrlCheck> urlCheck;
     private long pageNumber;
+    private String conditionPagingNext;
+    private String conditionPagingBack;
 }
