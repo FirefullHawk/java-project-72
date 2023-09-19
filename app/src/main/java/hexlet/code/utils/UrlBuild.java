@@ -4,7 +4,7 @@ import java.net.URL;
 
 public class UrlBuild {
     public static String urlBuild(URL url) {
-        String protocol = url.getProtocol();
+        String protocol = url.getProtocol() == null ? "" : url.getProtocol();
         String host = url.getHost();
         String port = url.getPort() == -1 ? "" : ":" + url.getPort();
         String specialSymbols = "://";
