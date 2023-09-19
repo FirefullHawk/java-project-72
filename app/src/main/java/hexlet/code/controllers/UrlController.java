@@ -34,7 +34,7 @@ public class UrlController {
 
     public static void create(Context ctx) throws SQLException {
         try {
-            var name = ctx.formParamAsClass("name", String.class)
+            var name = ctx.formParamAsClass("url", String.class)
                     .get()
                     .toLowerCase()
                     .trim();

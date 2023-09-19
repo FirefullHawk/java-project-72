@@ -95,7 +95,7 @@ public final class UrlTest {
     @Test
     public void testCreateUrl() throws Exception {
         JavalinTest.test(app, (server, client) -> {
-            var requestBody = "name=http://www.example.com";
+            var requestBody = "url=http://www.example.com";
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
             assertThat(response.body().string()).contains("http://www.example.com");
