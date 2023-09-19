@@ -146,6 +146,7 @@ public final class UrlTest {
 
     @AfterAll
     public static void afterAll() throws IOException {
+        app.stop();
         mockServer.shutdown();
     }
 }

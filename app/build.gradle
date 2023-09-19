@@ -1,8 +1,8 @@
 plugins {
     id 'application'
     id 'checkstyle'
-    id 'com.adarshr.test-logger' version '3.0.0'
-    id 'com.github.ben-manes.versions' version '0.39.0'
+    id 'com.adarshr.test-logger' version '3.2.0'
+    id 'com.github.ben-manes.versions' version '0.42.0'
     id 'jacoco'
     id("io.freefair.lombok") version "8.1.0"
 }
@@ -29,7 +29,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.16.1")
 
     //databases
-    implementation("com.h2database:h2:2.2.220")
+    implementation("com.h2database:h2:2.2.222")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation('org.postgresql:postgresql:42.1.4')
 
