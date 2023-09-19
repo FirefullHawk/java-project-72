@@ -81,24 +81,30 @@ public class UrlController {
     }
 
     public static void check(Context ctx) throws SQLException {
-        var id = ctx.pathParamAsClass("id", Long.class).get();
+        long id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlsRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
-        var parsedHtml = new HtmlParser(url.getName());
+        try {
+            var parsedHtml = new HtmlParser(url.getName());
 
-        long status = parsedHtml.getCode();
-        String h1 = parsedHtml.getH1();
-        String description = parsedHtml.getDescription();
-        String title = parsedHtml.getTitle();
+            long status = parsedHtml.getCode();
+            String h1 = parsedHtml.getH1();
+            String description = parsedHtml.getDescription();
+            String title = parsedHtml.getTitle();
 
-        var urlToCheck = new UrlCheck(status, title, h1, description, id);
-        CheckRepository.save(urlToCheck);
+            var urlToCheck = new UrlCheck(status, title, h1, description, id);
+            CheckRepository.save(urlToCheck);
 
-        ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
-        ctx.sessionAttribute("flash-type", "success");
+            ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
+            ctx.sessionAttribute("flash-type", "success");
 
-        ctx.redirect(NamedRoutes.urlPath(id));
+            ctx.redirect(NamedRoutes.urlPath(id));
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", "Некорректный адрес");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.redirect(NamedRoutes.urlPath(id));
+        }
     }
 
     public static void index(Context ctx) throws SQLException {
