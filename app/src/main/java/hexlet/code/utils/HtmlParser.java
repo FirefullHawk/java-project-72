@@ -16,7 +16,6 @@ public final class HtmlParser {
                 .header("Accept", "text/html")
                 .asString()
                 .getBody();
-
         Unirest.shutDown();
 
         return Jsoup.parse(parsedHtml, this.urlToParser);
