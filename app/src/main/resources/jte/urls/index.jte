@@ -22,10 +22,16 @@ content = @`
         <tr>
           <td class="col-1">${url.getId()}</td>
           <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
-          @if (!page.getUrlChecks().isEmpty())
-          <td class="col-2">${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getCreatedAt().toString().substring(0, 16)}</td>
-          <td class="col-1">${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getStatusCode()}</td>
-          @endif
+          <td class="col-2">
+              @if (!page.getUrlChecks().isEmpty())
+              ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getCreatedAt().toString().substring(0, 16)}
+              @endif
+          </td>
+          <td class="col-1">
+            @if (!page.getUrlChecks().isEmpty())
+            ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getStatusCode()}
+            @endif
+          </td>
         </tr>
       @endfor
       </tbody>
