@@ -15,11 +15,11 @@ start:
 install:
 	make -C app install
 
-run-dist:
-	make -C app run-dist
+run-prod:
+	make -C app run-prod
 
-run:
-	make -C app run
+run-dev:
+	make -C app run-dev
 
 test:
 	make -C app test

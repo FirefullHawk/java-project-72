@@ -9,14 +9,14 @@ clean:
 build:
 	./gradlew clean build
 
-start:
+run-dev:
 	APP_ENV=development ./gradlew run
 
 install:
 	./gradlew install
 
-start-dist:
-	APP_ENV=production ./build/install/java-javalin-blog/bin/java-javalin-blog
+run-prod:
+	APP_ENV=production ./gradlew run
 
 lint:
 	./gradlew checkstyleMain checkstyleTest

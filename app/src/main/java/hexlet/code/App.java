@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.utils.Helper;
 import hexlet.code.utils.NamedRoutes;
 
 import gg.jte.ContentType;
@@ -13,13 +14,14 @@ import gg.jte.resolve.ResourceCodeResolver;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 public final class App {
+
+    private static String getDatabaseUrl() {
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
+    }
 
     private static int getPort() {
         String port = System.getenv().getOrDefault("PORT", "3000");
@@ -41,6 +43,18 @@ public final class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(getDatabaseUrl());
+
+        var dataSource = new HikariDataSource(hikariConfig);
+
+        var schemaSql = Helper.getSql("schema.sql");
+
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(schemaSql);
+        }
+        BaseRepository.dataSource = dataSource;
 
         Javalin app = Javalin.create(config -> {
             if (!isProduction()) {
@@ -48,22 +62,6 @@ public final class App {
             }
             JavalinJte.init(createTemplateEngine());
         });
-
-        var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl("jdbc:h2:mem:hexlet;DB_CLOSE_DELAY=-1;");
-
-        var dataSource = new HikariDataSource(hikariConfig);
-        var url = isProduction() ? App.class.getClassLoader().getResource("postgres/table.sql")
-                : App.class.getClassLoader().getResource("h2/table.sql");
-        var file = new File(url.getFile());
-        var sql = Files.lines(file.toPath())
-                .collect(Collectors.joining("\n"));
-
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
-        BaseRepository.dataSource = dataSource;
 
         app.get(NamedRoutes.rootPath(), RootController::index);
         app.get(NamedRoutes.urlsPath(), UrlController::index);
