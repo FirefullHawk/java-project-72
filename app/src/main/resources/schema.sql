@@ -15,7 +15,7 @@ create table urlChecks (
   title                         varchar(255),
   h1                            varchar(255),
   description                   text,
-  urlId                         bigint,
+  url_id                        bigint,
   created_at                    timestamp not null,
   primary key (id)
 );
