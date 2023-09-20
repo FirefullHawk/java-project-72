@@ -49,7 +49,12 @@ public final class App {
     public static Javalin getApp() throws IOException, SQLException {
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
-
+        if (isProduction()) {
+            String username = System.getenv("JDBC_DATABASE_USERNAME");
+            hikariConfig.setUsername(username);
+            String password = System.getenv("JDBC_DATABASE_PASSWORD");
+            hikariConfig.setPassword(password);
+        }
         var dataSource = new HikariDataSource(hikariConfig);
 
         String file = "schema.sql";
