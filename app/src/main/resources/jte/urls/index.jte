@@ -1,12 +1,16 @@
 @import hexlet.code.dto.urls.UrlsPage
-@import hexlet.code.utils.NamedRoutes
+@import hexlet.code.util.NamedRoutes
+
 @param UrlsPage page
+
 
 @template.layout.page(
 page = page,
 content = @`
   <div class="container-lg mt-5">
+
     <h1>Сайты</h1>
+
     <table class="table table-bordered table-hover mt-3">
       <thead>
       <tr>
@@ -19,18 +23,25 @@ content = @`
       <tbody>
       @for(var url : page.getUrls())
         <tr>
-          <td class="col-1">${url.getId()}</td>
-          <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
-          <td class="col-2">
-            @if (url.getLastCheck().getCreatedAt() != null)
-            ${url.getLastCheck().getCreatedAt().toString().substring(0,16)}
-            @endif
+          <td>
+            ${url.getId()}
           </td>
-          <td class="col-1">
-            @if (url.getLastCheck().getStatusCode() != null)
-            ${url.getLastCheck().getStatusCode()}
-            @endif
+          <td>
+            <a href="/urls/${url.getId()}">${url.getName()}</a>
           </td>
+          @if((url.getLastCheck() != null) && (url.getLastCheck().getCreatedAt() != null))
+            <td>
+              ${String.valueOf(url.getLastCheck().getCreatedAt())}
+            </td>
+            <td>
+              ${url.getLastCheck().getStatusCode()}
+            </td>
+          @else
+            <td>
+            </td>
+            <td>
+            </td>
+          @endif
         </tr>
       @endfor
       </tbody>
@@ -38,17 +49,22 @@ content = @`
 
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-center mt-5">
-        <li class="page-item ${page.getConditionPagingBack()}">
-          <a class="page-link" href="${NamedRoutes.urlsPath()}?page=${page.getPageNumber() > 1? page.getPageNumber() - 1 : 1}">Previous</a>
+        <li class="page-item">
+          <a class="page-link" href="?page=${page.getPageNumber() < 2 ? 1 : page.getPageNumber() - 1}"
+             aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
         </li>
-        <li class="page-item active">
-          <a class="page-link" href="${NamedRoutes.urlsPath()}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
+        <li class="page-item"><a class="page-link"
+                                 href="${NamedRoutes.urlsPath()}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
         </li>
-        <li class="page-item ${page.getConditionPagingNext()}">
-          <a class="page-link" href="${NamedRoutes.urlsPath()}?page=${page.getPageNumber() + 1}">Next</a>
+        <li class="page-item">
+          <a class="page-link" href="?page=${page.getPageNumber() + 1}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
         </li>
       </ul>
     </nav>
   </div>
-`,
+`
 )

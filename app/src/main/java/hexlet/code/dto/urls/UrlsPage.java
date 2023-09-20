@@ -1,17 +1,16 @@
 package hexlet.code.dto.urls;
 
-import java.util.List;
 import hexlet.code.dto.BasePage;
 import hexlet.code.model.Url;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
-public class UrlsPage extends BasePage {
+
+public class   UrlsPage extends BasePage {
     private List<Url> urls;
-    private long pageNumber;
-    private String conditionPagingNext;
-    private String conditionPagingBack;
+    private int pageNumber;
 }
