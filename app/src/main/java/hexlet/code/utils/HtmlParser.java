@@ -13,7 +13,13 @@ public final class HtmlParser {
     }
 
     private Document parsedHtmlBody() {
-        HttpResponse<String> parsedHtml = Unirest.get(this.urlToParser).asString();
+        final int connectionTime = 8000;
+        final int socketTime = 8000;
+
+        HttpResponse<String> parsedHtml = Unirest.get(this.urlToParser)
+                .connectTimeout(connectionTime)
+                .socketTimeout(socketTime)
+                .asString();
         return Jsoup.parse(parsedHtml.getBody(), this.urlToParser);
     }
 
