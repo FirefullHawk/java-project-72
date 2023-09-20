@@ -125,12 +125,12 @@ public class UrlController {
                 .collect(Collectors.toList());
 
         urls.forEach(url -> {
-                            try {
-                                url.setLastCheck(UrlCheckRepository.getLastCheck(url.getId()));
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+            try {
+                url.setLastCheck(UrlCheckRepository.getLastCheck(url.getId()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         String conditionNext = UrlRepository.getEntities().size() > urlPerPage * pageNumber ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
