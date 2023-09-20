@@ -2,7 +2,7 @@ package hexlet.code;
 
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlCheckRepository;
-import hexlet.code.repository.UrlsRepository;
+import hexlet.code.repository.UrlRepository;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.MockResponse;
 import org.junit.jupiter.api.AfterAll;
