@@ -110,7 +110,7 @@ public final class UrlTest {
     public void testCreateCheck() throws Exception {
         String urlForCheck = mockServer.url("http://www.example.com").toString();
 
-        var url = new Url(urlForCheck,Timestamp.valueOf(LocalDateTime.now()));
+        var url = new Url(urlForCheck ,Timestamp.valueOf(LocalDateTime.now()));
         UrlRepository.save(url);
 
         JavalinTest.test(app, (server, client) -> {
