@@ -44,19 +44,16 @@ public  class UrlController {
             var url = new Url(normalizeUrl, createdAt);
 
             if (!UrlRepository.existsByName(normalizeUrl)) {
-                ctx.status(409);
                 UrlRepository.save(url);
                 ctx.sessionAttribute("flash", "Сайт успешно добавлен");
                 ctx.sessionAttribute("flash-type", "success");
                 ctx.redirect(NamedRoutes.urlsPath());
             } else {
-                ctx.status(400);
                 ctx.sessionAttribute("flash", "Сайт уже добавлен");
                 ctx.sessionAttribute("flash-type", "info");
                 ctx.redirect(NamedRoutes.urlsPath());
             }
         } catch (MalformedURLException | URISyntaxException e) {
-
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());

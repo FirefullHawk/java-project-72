@@ -58,7 +58,6 @@ public final class      App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-
         JavalinJte.init(createTemplateEngine());
 
         var hikariConfig = new HikariConfig();
@@ -75,7 +74,6 @@ public final class      App {
         var reader = new BufferedReader(new InputStreamReader(inputStream));
         var sql = reader.lines().collect(Collectors.joining("\n"));
 
-        log.info(sql);
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
