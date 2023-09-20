@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS url_checks;
-DROP TABLE IF EXISTS url;
+DROP TABLE IF EXISTS urls;
 
 create table urls (
   id                            SERIAL PRIMARY KEY,
