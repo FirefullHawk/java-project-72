@@ -3,6 +3,7 @@ package hexlet.code.utils;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import kong.unirest.HttpResponse;
 
 public final class HtmlParser {
     private final String urlToParser;
@@ -12,18 +13,8 @@ public final class HtmlParser {
     }
 
     private Document parsedHtmlBody() {
-        final int connectionTime = 8000;
-        final int socketTime = 8000;
-
-        String parsedHtml = Unirest.get(this.urlToParser)
-                .header("Accept", "text/html")
-                .connectTimeout(connectionTime)
-                .socketTimeout(socketTime)
-                .asString()
-                .getBody();
-        Unirest.shutDown();
-
-        return Jsoup.parse(parsedHtml, this.urlToParser);
+        HttpResponse<String> parsedHtml = Unirest.get(this.urlToParser).asString();
+        return Jsoup.parse(parsedHtml.getBody(), this.urlToParser);
     }
 
     public Integer getCode() {
