@@ -31,7 +31,7 @@ content = @`
           </td>
           @if((url.getLastCheck() != null) && (url.getLastCheck().getCreatedAt() != null))
             <td>
-              ${String.valueOf(url.getLastCheck().getCreatedAt())}
+              ${String.valueOf(url.getLastCheck().getCreatedAt()).substring(0,16)}
             </td>
             <td>
               ${url.getLastCheck().getStatusCode()}
@@ -49,16 +49,16 @@ content = @`
 
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-center mt-5">
-        <li class="page-item">
+        <li class="page-item ${page.getConditionBack()}">
           <a class="page-link" href="?page=${page.getPageNumber() < 2 ? 1 : page.getPageNumber() - 1}"
              aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
-        <li class="page-item"><a class="page-link"
+        <li class="page-item active"><a class="page-link"
                                  href="${NamedRoutes.urlsPath()}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
         </li>
-        <li class="page-item">
+        <li class="page-item ${page.getConditionNext()}">
           <a class="page-link" href="?page=${page.getPageNumber() + 1}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>

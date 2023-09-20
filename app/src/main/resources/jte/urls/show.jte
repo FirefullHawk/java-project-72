@@ -23,7 +23,7 @@ content = @`
       </tr>
       <tr>
         <td>Дата создания</td>
-        <td>${String.valueOf(page.getUrl().getCreatedAt())}</td>
+        <td>${String.valueOf(page.getUrl().getCreatedAt()).substring(0,16)}</td>
       </tr>
       </tbody>
     </table>
@@ -51,12 +51,31 @@ content = @`
             <td>${urlCheck.getTitle()}</td>
             <td>${urlCheck.getH1()}</td>
             <td>${urlCheck.getDescription()}</td>
-            <td>${String.valueOf(urlCheck.getCreatedAt())}</td>
+            <td>${String.valueOf(urlCheck.getCreatedAt()).substring(0,16)}</td>
           </tr>
         @endfor
       @endif
       </tbody>
     </table>
+
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center mt-5">
+        <li class="page-item ${page.getConditionBack()}">
+          <a class="page-link" href="?page=${page.getPageNumber() < 2 ? 1 : page.getPageNumber() - 1}"
+             aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item active"><a class="page-link"
+          href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
+        </li>
+        <li class="page-item ${page.getConditionNext()}">
+          <a class="page-link" href="?page=${page.getPageNumber() + 1}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 `
 )

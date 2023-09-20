@@ -62,7 +62,7 @@ public  class UrlController {
 
     public static void showUrls(Context ctx) throws SQLException {
         var urls = UrlRepository.getEntities();
-        var pageNumber = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1);
+        var pageNumber = ctx.queryParamAsClass("page", long.class).getOrDefault(1L);
         var per = 10;
         var firstPost = (pageNumber - 1) * per;
 
@@ -79,7 +79,11 @@ public  class UrlController {
             }
         });
 
-        var page = new UrlsPage(pagedUrls, pageNumber);
+        String conditionNext = UrlRepository.getEntities().size() > pageNumber * per
+                ? "active" : "disabled";
+        String conditionBack = pageNumber > 1 ? "active" : "disabled";
+
+        var page = new UrlsPage(pagedUrls, pageNumber, conditionNext, conditionBack);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", Collections.singletonMap("page", page));
@@ -87,13 +91,22 @@ public  class UrlController {
 
     public static void showUrl(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
+        var pageNumber = ctx.queryParamAsClass("page", long.class).getOrDefault(1L);
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
         var urlChecks = UrlCheckRepository.getEntities(id);
         url.setUrlChecks(urlChecks);
 
-        var page = new UrlPage(url);
+        final long urlPerPage = 5;
+
+        String conditionNext = UrlCheckRepository.getEntities(id).size() > pageNumber * urlPerPage
+                ? "active" : "disabled";
+        String conditionBack = pageNumber > 1 ? "active" : "disabled";
+
+        var page = new UrlPage(url, pageNumber, conditionNext, conditionBack);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
 
@@ -102,26 +115,19 @@ public  class UrlController {
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
-        try {
-            var parsedHtml = new HtmlParser(url.getName());
+        var parsedHtml = new HtmlParser(url.getName());
 
-            int status = parsedHtml.getCode();
-            String h1 = parsedHtml.getH1();
-            String description = parsedHtml.getDescription();
-            String title = parsedHtml.getTitle();
-            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+        int status = parsedHtml.getCode();
+        String h1 = parsedHtml.getH1();
+        String description = parsedHtml.getDescription();
+        String title = parsedHtml.getTitle();
+        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-            var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
-            UrlCheckRepository.save(urlToCheck);
+        var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
+        UrlCheckRepository.save(urlToCheck);
 
-            ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
-            ctx.sessionAttribute("flash-type", "success");
-
-            ctx.redirect(NamedRoutes.urlPath(id));
-        } catch (Exception e) {
-            ctx.sessionAttribute("flash", "Некорректный адрес");
-            ctx.sessionAttribute("flash-type", "danger");
-            ctx.redirect(NamedRoutes.urlPath(id));
-        }
+        ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
+        ctx.sessionAttribute("flash-type", "success");
+        ctx.redirect(NamedRoutes.urlPath(id));
     }
 }

@@ -10,4 +10,7 @@ import lombok.Getter;
 @Getter
 public class UrlPage extends BasePage {
     private Url url;
+    private long pageNumber;
+    private String conditionNext;
+    private String conditionBack;
 }
