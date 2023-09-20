@@ -21,6 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public final class App {
 
     private static String getDatabaseUrl() {
@@ -61,6 +64,7 @@ public final class App {
 
         String sql = getContentFromStream(getFileFromResourceAsStream(file));
 
+        log.info(sql);
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
