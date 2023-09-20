@@ -26,7 +26,7 @@ public final class HtmlParser {
         return Jsoup.parse(parsedHtml, this.urlToParser);
     }
 
-    public long getCode() {
+    public Integer getCode() {
         return Unirest.get(this.urlToParser).asString().getStatus();
     }
 

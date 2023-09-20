@@ -18,6 +18,8 @@ import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -41,9 +43,9 @@ public class UrlController {
 
             var urlToValidate = new URI(name);
             String normalizeUrl = urlBuild(urlToValidate.toURL());
-            var url = new Url(normalizeUrl);
+            var url = new Url(normalizeUrl, Timestamp.valueOf(LocalDateTime.now()));
 
-            if (UrlRepository.findByName(url.getName()).isEmpty()) {
+            if (UrlRepository.findByName(url.getName()) == null) {
                 UrlRepository.save(url);
                 ctx.sessionAttribute("flash", "Сайт успешно добавлен");
                 ctx.sessionAttribute("flash-type", "success");
@@ -93,12 +95,13 @@ public class UrlController {
         try {
             var parsedHtml = new HtmlParser(url.getName());
 
-            long status = parsedHtml.getCode();
+            Integer status = parsedHtml.getCode();
             String h1 = parsedHtml.getH1();
             String description = parsedHtml.getDescription();
             String title = parsedHtml.getTitle();
+            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-            var urlToCheck = new UrlCheck(status, title, h1, description, id);
+            var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
             UrlCheckRepository.save(urlToCheck);
 
             ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
