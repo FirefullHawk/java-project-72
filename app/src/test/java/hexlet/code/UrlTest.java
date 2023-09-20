@@ -1,7 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
-import hexlet.code.repository.CheckRepository;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlsRepository;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.MockResponse;
@@ -117,7 +117,7 @@ public final class UrlTest {
             assertThat(response.body().string()).contains("Example Domain");
         });
 
-        assertThat(CheckRepository.getEntities()).hasSize(1);
+        assertThat(UrlCheckRepository.getEntities()).hasSize(1);
     }
 
     @Test
@@ -133,7 +133,7 @@ public final class UrlTest {
             assertThat(response.body().string()).doesNotContain("Example Domain");
         });
 
-        assertThat(CheckRepository.getEntities()).hasSize(1);
+        assertThat(UrlCheckRepository.getEntities()).hasSize(1);
     }
 
     @AfterAll

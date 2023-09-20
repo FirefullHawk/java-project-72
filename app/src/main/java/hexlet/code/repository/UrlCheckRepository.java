@@ -6,9 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class CheckRepository extends BaseRepository {
+public class UrlCheckRepository extends BaseRepository {
     private static final Integer INDEX_ONE = 1;
     private static final Integer INDEX_TWO = 2;
     private static final Integer INDEX_THREE = 3;
@@ -35,27 +34,6 @@ public class CheckRepository extends BaseRepository {
             } else {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }
-        }
-    }
-
-    public static Optional<UrlCheck> byUrlId(Long id) throws SQLException {
-        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id DESC";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id);
-            var resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                var statusCode = resultSet.getLong("status_code");
-                var title = resultSet.getString("title");
-                var h1 = resultSet.getString("h1");
-                var description = resultSet.getString("description");
-                var urlId = resultSet.getLong("url_id");
-                var createdAt = resultSet.getTimestamp("created_at");
-                var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
-                urlCheck.setId(id);
-                return Optional.of(urlCheck);
-            }
-            return Optional.empty();
         }
     }
 

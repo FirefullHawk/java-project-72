@@ -10,7 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import hexlet.code.model.UrlCheck;
-import hexlet.code.repository.CheckRepository;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.utils.HtmlParser;
 import hexlet.code.utils.NamedRoutes;
@@ -69,13 +69,13 @@ public class UrlController {
 
         final long urlPerPage = 5;
 
-        var urlsCheck = CheckRepository.getEntitiesByUrlId(id)
+        var urlsCheck = UrlCheckRepository.getEntitiesByUrlId(id)
                 .stream()
                 .skip((pageNumber - 1) * urlPerPage)
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        String conditionNext = CheckRepository.getEntities().size() > pageNumber * urlPerPage
+        String conditionNext = UrlCheckRepository.getEntities().size() > pageNumber * urlPerPage
                 ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
@@ -99,7 +99,7 @@ public class UrlController {
             String title = parsedHtml.getTitle();
 
             var urlToCheck = new UrlCheck(status, title, h1, description, id);
-            CheckRepository.save(urlToCheck);
+            UrlCheckRepository.save(urlToCheck);
 
             ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
             ctx.sessionAttribute("flash-type", "success");
@@ -121,7 +121,7 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        var urlChecks = CheckRepository.getEntities();
+        var urlChecks = UrlCheckRepository.getEntities();
 
         String conditionNext = UrlsRepository.getEntities().size() > urlPerPage * pageNumber ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
