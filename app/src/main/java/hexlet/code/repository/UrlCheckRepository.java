@@ -44,7 +44,7 @@ public class UrlCheckRepository extends BaseRepository {
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
-            var result = new ArrayList<>();
+            var result = new ArrayList<UrlCheck>();
             while (resultSet.next()) {
                 var id = resultSet.getLong("id");
                 var statusCode = resultSet.getLong("status_code");
