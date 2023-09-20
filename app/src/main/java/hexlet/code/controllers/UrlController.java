@@ -19,6 +19,11 @@ import hexlet.code.util.NamedRoutes;
 import hexlet.code.utils.HtmlParser;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -116,27 +121,41 @@ public  class UrlController {
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
         try {
-            var parsedHtml = new HtmlParser(url.getName());
+            HttpResponse<String> response = Unirest.get(url.getName()).asString();
 
-            int status = parsedHtml.getCode();
-            String h1 = parsedHtml.getH1();
-            String description = parsedHtml.getDescription();
-            String title = parsedHtml.getTitle();
-            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+            var statusCode = response.getStatus();
+            Document doc = Jsoup.parse(response.getBody());
 
-            var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
-            UrlCheckRepository.save(urlToCheck);
+            String title = "";
+            if (doc.title() != null) {
+                title = doc.title();
+            }
 
-            ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
+
+            String h1 = "";
+            Element h1Element = doc.selectFirst("h1");
+            if (h1Element != null) {
+                h1 = h1Element.text();
+            }
+
+            String description = "";
+            Element descElement = doc.selectFirst("meta[name=description]");
+            if (descElement != null) {
+                description = descElement.attr("content");
+            }
+
+            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+            var urlCheck = new UrlCheck(statusCode, title, h1, description, id, createdAt);
+            UrlCheckRepository.save(urlCheck);
+
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
             ctx.sessionAttribute("flash-type", "success");
             ctx.redirect(NamedRoutes.urlPath(id));
         } catch (Exception e) {
             ctx.sessionAttribute("flash", "Неверный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.urlPath(id));
-            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-            var urlToCheck = new UrlCheck(502, "", "", "", id, createdAt);
-            UrlCheckRepository.save(urlToCheck);
         }
 
     }
