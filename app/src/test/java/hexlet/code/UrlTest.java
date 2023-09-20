@@ -138,6 +138,22 @@ public final class UrlTest {
         assertThat(UrlCheckRepository.getEntities(1L)).hasSize(1);
     }
 
+    @Test
+    public void wrongUrl() throws Exception {
+        String urlForCheck = mockServer.url("http://www.empty.commar").toString();
+
+        var url = new Url(urlForCheck, Timestamp.valueOf(LocalDateTime.now()));
+        UrlRepository.save(url);
+
+        JavalinTest.test(app, (server, client) -> {
+            var response = client.post("/urls/1/checks");
+            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.body().string()).doesNotContain("Example Domain");
+        });
+
+        assertThat(UrlCheckRepository.getEntities(1L)).hasSize(0);
+    }
+
     @AfterAll
     public static void afterAll() throws IOException {
         app.stop();

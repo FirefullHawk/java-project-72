@@ -122,25 +122,13 @@ public  class UrlController {
             HttpResponse<String> response = Unirest.get(url.getName()).asString();
 
             var statusCode = response.getStatus();
+
             Document doc = Jsoup.parse(response.getBody());
-
-            String title = "";
-            if (doc.title() != null) {
-                title = doc.title();
-            }
-
-
-            String h1 = "";
+            String title = doc.title();
             Element h1Element = doc.selectFirst("h1");
-            if (h1Element != null) {
-                h1 = h1Element.text();
-            }
-
-            String description = "";
+            String h1 = h1Element != null ? h1Element.text() : "";
             Element descElement = doc.selectFirst("meta[name=description]");
-            if (descElement != null) {
-                description = descElement.attr("content");
-            }
+            String description = descElement != null ? descElement.attr("content") : "";
 
             Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
