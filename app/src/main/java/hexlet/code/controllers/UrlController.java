@@ -115,19 +115,29 @@ public  class UrlController {
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
-        var parsedHtml = new HtmlParser(url.getName());
+        try {
+            var parsedHtml = new HtmlParser(url.getName());
 
-        int status = parsedHtml.getCode();
-        String h1 = parsedHtml.getH1();
-        String description = parsedHtml.getDescription();
-        String title = parsedHtml.getTitle();
-        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+            int status = parsedHtml.getCode();
+            String h1 = parsedHtml.getH1();
+            String description = parsedHtml.getDescription();
+            String title = parsedHtml.getTitle();
+            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-        var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
-        UrlCheckRepository.save(urlToCheck);
+            var urlToCheck = new UrlCheck(status, title, h1, description, id, createdAt);
+            UrlCheckRepository.save(urlToCheck);
 
-        ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
-        ctx.sessionAttribute("flash-type", "success");
-        ctx.redirect(NamedRoutes.urlPath(id));
+            ctx.sessionAttribute("flash", "Проверка сайта успешно проведена");
+            ctx.sessionAttribute("flash-type", "success");
+            ctx.redirect(NamedRoutes.urlPath(id));
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", "Неверный URL");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.redirect(NamedRoutes.urlPath(id));
+            Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+            var urlToCheck = new UrlCheck(502, "", "", "", id, createdAt);
+            UrlCheckRepository.save(urlToCheck);
+        }
+
     }
 }
