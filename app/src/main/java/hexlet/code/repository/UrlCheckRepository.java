@@ -34,10 +34,10 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> getEntities(Long urlId) throws SQLException {
-        var sql = "SELECT * FROM url_checks where url_id = ? ORDER BY created_at DESC";
+        var sql = "SELECT * FROM url_checks where url_id = ?";
         try (var conn = dataSource.getConnection();
 
-            var stmt = conn.prepareStatement(sql)) {
+             var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, urlId);
             var resultSet = stmt.executeQuery();
             var result = new ArrayList<UrlCheck>();
@@ -57,17 +57,20 @@ public class UrlCheckRepository extends BaseRepository {
             }
             return result;
         }
+
     }
+
     public static UrlCheck getLastCheck(Long urlId) throws SQLException {
         var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
         try (var conn = dataSource.getConnection();
 
-            var stmt = conn.prepareStatement(sql)) {
+             var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, urlId);
             var resultSet = stmt.executeQuery();
             var urlCheck = new UrlCheck();
 
             if (resultSet.next()) {
+
                 var id = resultSet.getLong("id");
                 var statusCode = resultSet.getInt("status_code");
                 var title = resultSet.getString("title");
@@ -79,6 +82,6 @@ public class UrlCheckRepository extends BaseRepository {
             }
             return urlCheck;
         }
-    }
 
+    }
 }

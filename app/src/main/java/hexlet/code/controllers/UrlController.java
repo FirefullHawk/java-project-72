@@ -45,17 +45,19 @@ public class UrlController {
             String normalizeUrl = urlBuild(urlToValidate.toURL());
             var url = new Url(normalizeUrl, Timestamp.valueOf(LocalDateTime.now()));
 
-            if (UrlRepository.findByName(url.getName()) == null) {
+            if (!UrlRepository.existsByName(normalizeUrl)) {
                 UrlRepository.save(url);
                 ctx.sessionAttribute("flash", "Сайт успешно добавлен");
                 ctx.sessionAttribute("flash-type", "success");
                 ctx.redirect(NamedRoutes.urlsPath());
             } else {
+                ctx.status(409);
                 ctx.sessionAttribute("flash", "Сайт уже добавлен");
                 ctx.sessionAttribute("flash-type", "info");
                 ctx.redirect(NamedRoutes.urlsPath());
             }
         } catch (MalformedURLException | URISyntaxException e) {
+            ctx.status(400);
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.buildPath());
@@ -77,7 +79,9 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        String conditionNext = UrlCheckRepository.getEntities(id).size() > pageNumber * urlPerPage
+        url.setUrlChecks(urlsCheck);
+
+        String conditionNext = urlsCheck.size() > pageNumber * urlPerPage
                 ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
@@ -109,6 +113,7 @@ public class UrlController {
 
             ctx.redirect(NamedRoutes.urlPath(id));
         } catch (Exception e) {
+            ctx.status(400);
             ctx.sessionAttribute("flash", "Некорректный адрес");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.urlPath(id));

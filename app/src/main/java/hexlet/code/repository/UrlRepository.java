@@ -87,7 +87,5 @@ public class    UrlRepository extends BaseRepository {
             }
             return result;
         }
-
     }
-
 }
