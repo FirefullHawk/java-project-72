@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id 'application'
     id 'checkstyle'
@@ -31,7 +34,7 @@ dependencies {
     //databases
     implementation("com.h2database:h2:2.2.222")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation('org.postgresql:postgresql:42.1.4')
+    implementation('org.postgresql:postgresql:42.6.0')
 
     implementation("io.javalin:javalin:5.6.1")
     implementation("gg.jte:jte:3.0.1")
@@ -45,12 +48,12 @@ dependencies {
 
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.slf4j:slf4j-simple:2.0.7')
     testImplementation("org.assertj:assertj-core:3.24.2")
-    implementation group: 'com.konghq', name: 'unirest-java', version: '3.14.5'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.11.0'
-    testImplementation 'org.postgresql:postgresql:42.1.4'
+    implementation ('com.konghq:unirest-java:3.14.5')
+    testImplementation('com.squareup.okhttp3:mockwebserver:4.11.0')
+    testImplementation('org.postgresql:postgresql:42.6.0')
 }
 
 tasks.withType(JavaCompile) {
@@ -74,4 +77,15 @@ jacocoTestReport {
 checkstyle {
     toolVersion '10.12.2'
     configFile = rootProject.file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+        showStandardStreams = true
+
+    }
+    finalizedBy("jacocoTestReport")
 }
