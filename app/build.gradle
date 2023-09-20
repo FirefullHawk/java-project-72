@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
     id 'application'
     id 'checkstyle'
@@ -77,15 +74,4 @@ jacocoTestReport {
 checkstyle {
     toolVersion '10.12.2'
     configFile = rootProject.file("${rootDir}/config/checkstyle/checkstyle.xml")
-}
-
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
-        showStandardStreams = true
-
-    }
-    finalizedBy("jacocoTestReport")
 }
