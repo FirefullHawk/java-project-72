@@ -2,26 +2,22 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-public class    UrlRepository extends BaseRepository {
-
+public class UrlRepository extends BaseRepository {
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             preparedStatement.setString(1, url.getName());
             preparedStatement.setTimestamp(2, url.getCreatedAt());
             preparedStatement.executeUpdate();
-
             var generatedKeys = preparedStatement.getGeneratedKeys();
-
             if (generatedKeys.next()) {
                 url.setId(generatedKeys.getLong(1));
             } else {
@@ -47,25 +43,18 @@ public class    UrlRepository extends BaseRepository {
         }
     }
 
-    public static Url findByName(String name) throws SQLException {
-        var sql = "SELECT * FROM urls WHERE name = ?";
+    public static Optional<String> findByName(String inputName) throws SQLException {
+        var sql = "SELECT name FROM urls WHERE name = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, name);
+            stmt.setString(1, inputName);
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                var id = resultSet.getLong("id");
-                var createdAt = resultSet.getTimestamp("created_at");
-                var url = new Url(name, createdAt);
-                url.setId(id);
-                return url;
+                var name = resultSet.getString("name");
+                return Optional.of(name);
             }
-            return null;
+            return Optional.empty();
         }
-    }
-
-    public static boolean existsByName(String name) throws SQLException {
-        return findByName(name) != null;
     }
 
     public static List<Url> getEntities() throws SQLException {
@@ -74,20 +63,15 @@ public class    UrlRepository extends BaseRepository {
              var stmt = conn.prepareStatement(sql)) {
             var resultSet = stmt.executeQuery();
             var result = new ArrayList<Url>();
-
             while (resultSet.next()) {
-
                 var id = resultSet.getLong("id");
                 var name = resultSet.getString("name");
                 var createdAt = resultSet.getTimestamp("created_at");
                 var url = new Url(name, createdAt);
-
                 url.setId(id);
                 result.add(url);
             }
             return result;
         }
-
     }
-
 }

@@ -1,62 +1,73 @@
-
 @import hexlet.code.dto.urls.UrlPage
-@import hexlet.code.util.NamedRoutes
-
+@import hexlet.code.utils.NamedRoutes
 @param UrlPage page
 
 @template.layout.page(
 page = page,
 content = @`
     <div class="container-lg mt-5">
+      <h1>Сайт ${page.getUrl().getName()}</h1>
 
-    <h1>Сайт ${page.getUrl().getName()}</h1>
-
-    <table class="table table-bordered table-hover mt-3">
+      <table class="table table-bordered table-hover mt-3 text-truncate">
         <tbody>
-        <tr>
+          <tr>
             <td>ID</td>
             <td>${page.getUrl().getId()}</td>
-        </tr>
-        <tr>
+          </tr>
+          <tr>
             <td>Имя</td>
             <td>${page.getUrl().getName()}</td>
-        </tr>
-        <tr>
+          </tr>
+          <tr>
             <td>Дата создания</td>
-            <td>${String.valueOf(page.getUrl().getCreatedAt())}</td>
-        </tr>
+            <td>${page.getUrl().getCreatedAt().toString().substring(0, 16)}</td>
+          </tr>
         </tbody>
-    </table>
+      </table>
 
-    <h2 class="mt-5">Проверки</h2>
-    <form method="post" action="/urls/${page.getUrl().getId()}/checks">
+      <h2 class="mt-5">Проверки</h2>
+      <form method="post" action="${NamedRoutes.checkPath(page.getUrl().getId())}">
         <button type="submit" class="btn btn-primary">Запустить проверку</button>
-    </form>
+      </form>
 
-    <table class="table table-bordered table-hover mt-3">
+      <table class="table table-bordered table-hover mt-3">
         <thead>
-        <th class="col-1">ID</th>
-        <th class="col-1">Код ответа</th>
-        <th>title</th>
-        <th>h1</th>
-        <th>description</th>
-        <th class="col-2">Дата проверки</th>
+          <tr>
+            <th class="col-1">ID</th>
+            <th class="col-1">Код ответа</th>
+            <th>title</th>
+            <th>h1</th>
+            <th>description</th>
+            <th class="col-2">Дата проверки</th>
+          </tr>
         </thead>
-        <tbody>
-        @if(page.getUrl().getUrlChecks() != null)
-        @for(var urlCheck : page.getUrl().getUrlChecks())
-        <tr>
-            <td>${urlCheck.getId()}</td>
-            <td>${urlCheck.getStatusCode()}</td>
-            <td>${urlCheck.getTitle()}</td>
-            <td>${urlCheck.getH1()}</td>
-            <td>${urlCheck.getDescription()}</td>
-            <td>${String.valueOf(urlCheck.getCreatedAt())}</td>
-        </tr>
-        @endfor
-        @endif
-        </tbody>
-    </table>
+          @for(var checkedUrl : page.getUrlCheck())
+          <tbody>
+            <tr>
+              <td class="col-1">${checkedUrl.getId()}</td>
+              <td class="col-1">${checkedUrl.getStatusCode()}</td>
+              <td>${checkedUrl.getTitle()}</td>
+              <td>${checkedUrl.getH1()}</td>
+              <td>${checkedUrl.getDescription()}</td>
+              <td class="col-2">${checkedUrl.getCreatedAt().toString().substring(0, 16)}</td>
+            </tr>
+          </tbody>
+          @endfor
+      </table>
+
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-5">
+          <li class="page-item ${page.getConditionPagingBack()}">
+            <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() > 1? page.getPageNumber() - 1 : 1}">Previous</a>
+          </li>
+          <li class="page-item active">
+            <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber()}">${page.getPageNumber()}</a>
+          </li>
+          <li class="page-item ${page.getConditionPagingNext()}">
+            <a class="page-link" href="${NamedRoutes.urlPath(page.getUrl().getId())}?page=${page.getPageNumber() + 1}">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
-`
+`,
 )
