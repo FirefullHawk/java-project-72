@@ -32,7 +32,7 @@ public class UrlController {
         ctx.render("index.jte", Collections.singletonMap("page", page));
     }
 
-    public static void create(Context ctx) throws SQLException {
+    public static void addUrl(Context ctx) throws SQLException {
         try {
             var name = ctx.formParamAsClass("url", String.class)
                     .get()
@@ -60,7 +60,7 @@ public class UrlController {
         }
     }
 
-    public static void show(Context ctx) throws SQLException {
+    public static void showUrl(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var pageNumber = ctx.queryParamAsClass("page", long.class).getOrDefault(1L);
 
@@ -85,7 +85,7 @@ public class UrlController {
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
 
-    public static void check(Context ctx) throws SQLException {
+    public static void checkUrl(Context ctx) throws SQLException {
         long id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
@@ -112,7 +112,7 @@ public class UrlController {
         }
     }
 
-    public static void index(Context ctx) throws SQLException {
+    public static void showUrls(Context ctx) throws SQLException {
         var pageNumber = ctx.queryParamAsClass("page", long.class).getOrDefault(1L);
         final long urlPerPage = 10;
         var urls = UrlRepository.getEntities()
