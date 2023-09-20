@@ -69,7 +69,7 @@ public class UrlController {
 
         final long urlPerPage = 5;
 
-        var urlsCheck = UrlCheckRepository.getEntitiesByUrlId(id)
+        var urlsCheck = UrlCheckRepository.getEntities(id)
                 .stream()
                 .skip((pageNumber - 1) * urlPerPage)
                 .limit(urlPerPage)
