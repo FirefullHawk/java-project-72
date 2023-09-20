@@ -1,5 +1,3 @@
-.DEFAULT_GOAL := build-run
-
 setup:
 	gradle wrapper --gradle-version 8.3
 
@@ -9,14 +7,17 @@ clean:
 build:
 	./gradlew clean build
 
-run-dev:
+start:
 	APP_ENV=development ./gradlew run
 
 install:
 	./gradlew install
 
-run-prod:
-	APP_ENV=production ./gradlew run
+start-dist:
+	APP_ENV=production ./build/install/app/bin/app
+
+generate-migrations:
+	./gradlew generateMigrations
 
 lint:
 	./gradlew checkstyleMain checkstyleTest
@@ -31,9 +32,9 @@ check-updates:
 	./gradlew dependencyUpdates
 
 image-build:
-	docker build -t firefullhawk/java-project-72:latest .
+	docker build -t FirefullHawk/java-project-72:latest .
 
 image-push:
-	docker push firefullhawk/java-project-72:latest
+	docker push FirefullHawk/java-project-72:latest
 
 .PHONY: build
