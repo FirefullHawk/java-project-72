@@ -22,13 +22,13 @@ content = @`
           <td class="col-1">${url.getId()}</td>
           <td><a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a></td>
           <td class="col-2">
-            @if (page.getUrlChecks().stream().anyMatch(urlCheck -> urlCheck.getUrlId() == url.getId()))
-            ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getCreatedAt().toString().substring(0,16)}
+            @if (url.getLastCheck().getCreatedAt() != null)
+            ${url.getLastCheck().getCreatedAt().toString().substring(0,16)}
             @endif
           </td>
           <td class="col-1">
-            @if (page.getUrlChecks().stream().anyMatch(urlCheck -> urlCheck.getUrlId() == url.getId()))
-            ${page.getUrlChecks().stream().filter(urlCheck -> urlCheck.getUrlId() == url.getId()).findFirst().orElse(null).getStatusCode()}
+            @if (url.getLastCheck().getStatusCode() != null)
+            ${url.getLastCheck().getStatusCode()}
             @endif
           </td>
         </tr>

@@ -34,7 +34,7 @@ public class UrlCheckRepository extends BaseRepository {
     }
 
     public static List<UrlCheck> getEntities(Long urlId) throws SQLException {
-        var sql = "SELECT * FROM url_checks where url_id = ?";
+        var sql = "SELECT * FROM url_checks where url_id = ? ORDER BY created_at DESC";
         try (var conn = dataSource.getConnection();
 
             var stmt = conn.prepareStatement(sql)) {
@@ -68,7 +68,6 @@ public class UrlCheckRepository extends BaseRepository {
             var urlCheck = new UrlCheck();
 
             if (resultSet.next()) {
-
                 var id = resultSet.getLong("id");
                 var statusCode = resultSet.getInt("status_code");
                 var title = resultSet.getString("title");
@@ -79,32 +78,6 @@ public class UrlCheckRepository extends BaseRepository {
                 urlCheck.setId(id);
             }
             return urlCheck;
-        }
-    }
-
-    public static List<UrlCheck> getEntities() throws SQLException {
-        var sql = "SELECT * FROM url_checks";
-        try (var conn = dataSource.getConnection();
-
-             var stmt = conn.prepareStatement(sql)) {
-            var resultSet = stmt.executeQuery();
-            var result = new ArrayList<UrlCheck>();
-
-            while (resultSet.next()) {
-
-                var id = resultSet.getLong("id");
-                var statusCode = resultSet.getInt("status_code");
-                var title = resultSet.getString("title");
-                var h1 = resultSet.getString("h1");
-                var urlId = resultSet.getLong("url_id");
-                var description = resultSet.getString("description");
-                var createdAt = resultSet.getTimestamp("created_at");
-                var urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
-
-                urlCheck.setId(id);
-                result.add(urlCheck);
-            }
-            return result;
         }
     }
 

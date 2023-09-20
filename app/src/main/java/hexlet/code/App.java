@@ -29,13 +29,12 @@ public final class      App {
     private static int getPort() {
         String port = System.getenv()
                 .getOrDefault("PORT", "7070");
-        return Integer.valueOf(port);
+        return Integer.parseInt(port);
     }
 
     private static String getMode() {
-        String mode = System.getenv()
+        return System.getenv()
                 .getOrDefault("APP_ENV", "development");
-        return mode;
     }
 
     private static boolean isProduction() {
@@ -43,9 +42,8 @@ public final class      App {
     }
 
     private static String getDatabaseUrl() {
-        String dataBase = System.getenv()
+        return System.getenv()
                 .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:hexlet_project;DB_CLOSE_DELAY=-1;");
-        return dataBase;
     }
 
     public static void main(String[] args) throws SQLException, IOException {
@@ -56,8 +54,7 @@ public final class      App {
     private static TemplateEngine createTemplateEngine() {
         ClassLoader classLoader = App.class.getClassLoader();
         ResourceCodeResolver codeResolver = new ResourceCodeResolver("jte", classLoader);
-        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
-        return templateEngine;
+        return TemplateEngine.create(codeResolver, ContentType.Html);
     }
 
     public static Javalin getApp() throws IOException, SQLException {

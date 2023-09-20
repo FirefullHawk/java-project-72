@@ -77,7 +77,7 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        String conditionNext = UrlCheckRepository.getEntities().size() > pageNumber * urlPerPage
+        String conditionNext = UrlCheckRepository.getEntities(id).size() > pageNumber * urlPerPage
                 ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
@@ -124,12 +124,18 @@ public class UrlController {
                 .limit(urlPerPage)
                 .collect(Collectors.toList());
 
-        var urlChecks = UrlCheckRepository.getEntities();
+        urls.forEach(url -> {
+                            try {
+                                url.setLastCheck(UrlCheckRepository.getLastCheck(url.getId()));
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
 
         String conditionNext = UrlRepository.getEntities().size() > urlPerPage * pageNumber ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
-        var page = new UrlsPage(urls, urlChecks, pageNumber, conditionNext, conditionBack);
+        var page = new UrlsPage(urls, pageNumber, conditionNext, conditionBack);
 
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
