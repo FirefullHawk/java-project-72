@@ -1,16 +1,16 @@
 package hexlet.code.utils;
 
 public class NamedRoutes {
-    public static String rootPath() {
-        return "/";
-    }
 
-    public static String buildPath() {
-        return "/";
+    private static final String ROOT_PATH = "/";
+    private static final String URLS_PATH = "/urls";
+
+    public static String rootPath() {
+        return ROOT_PATH;
     }
 
     public static String urlsPath() {
-        return "/urls";
+        return URLS_PATH;
     }
 
     public static String urlPath(long id) {
@@ -18,14 +18,14 @@ public class NamedRoutes {
     }
 
     public static String urlPath(String id) {
-        return "/urls/" + id;
+        return String.format(URLS_PATH + "/%s", id);
     }
 
-    public static String checkPath(String id) {
-        return "/urls/" + id + "/checks";
+    public static String urlCheckPath(String id) {
+        return String.format(URLS_PATH + "/%s/checks", id);
     }
 
-    public static String checkPath(long id) {
-        return checkPath(String.valueOf(id));
+    public static String urlCheckPath(long id) {
+        return urlCheckPath(String.valueOf(id));
     }
 }

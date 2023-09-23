@@ -14,7 +14,7 @@ import hexlet.code.model.UrlCheck;
 
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
-import hexlet.code.util.NamedRoutes;
+import hexlet.code.utils.NamedRoutes;
 
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
@@ -24,6 +24,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,31 +33,34 @@ import static hexlet.code.utils.UrlBuild.urlBuild;
 
 public  class UrlController {
     public static void addUrl(Context ctx) throws SQLException {
-        try {
-            var name = ctx.formParamAsClass("url", String.class)
+        var name = ctx.formParamAsClass("url", String.class)
                     .get()
                     .toLowerCase()
                     .trim();
 
-            var urlToValidate = new URI(name);
-            String normalizeUrl = urlBuild(urlToValidate.toURL());
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-            var url = new Url(normalizeUrl, createdAt);
+        String normalizeUrl = "";
 
-            if (!UrlRepository.existsByName(normalizeUrl)) {
-                UrlRepository.save(url);
-                ctx.sessionAttribute("flash", "Сайт успешно добавлен");
-                ctx.sessionAttribute("flash-type", "success");
-                ctx.redirect(NamedRoutes.urlsPath());
-            } else {
-                ctx.sessionAttribute("flash", "Сайт уже добавлен");
-                ctx.sessionAttribute("flash-type", "info");
-                ctx.redirect(NamedRoutes.urlsPath());
-            }
+        try {
+            var urlToValidate = new URI(name).toURL();
+            normalizeUrl = urlBuild(urlToValidate);
         } catch (MalformedURLException | URISyntaxException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());
+        }
+
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+        var url = new Url(normalizeUrl, createdAt);
+
+        if (!UrlRepository.existsByName(normalizeUrl)) {
+            UrlRepository.save(url);
+            ctx.sessionAttribute("flash", "Сайт успешно добавлен");
+            ctx.sessionAttribute("flash-type", "success");
+            ctx.redirect(NamedRoutes.urlsPath());
+        } else {
+            ctx.sessionAttribute("flash", "Сайт уже добавлен");
+            ctx.sessionAttribute("flash-type", "info");
+            ctx.redirect(NamedRoutes.urlsPath());
         }
     }
 
@@ -71,9 +75,11 @@ public  class UrlController {
                 .limit(per)
                 .collect(Collectors.toList());
 
+        List<UrlCheck> lastCheck = new ArrayList<>();
+
         pagedUrls.forEach(url -> {
             try {
-                url.setLastCheck(UrlCheckRepository.getLastCheck(url.getId()));
+                lastCheck.add(UrlCheckRepository.getLastCheck(url.getId()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -83,7 +89,7 @@ public  class UrlController {
                 ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
-        var page = new UrlsPage(pagedUrls, pageNumber, conditionNext, conditionBack);
+        var page = new UrlsPage(pagedUrls, pageNumber, lastCheck, conditionNext, conditionBack);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", Collections.singletonMap("page", page));
@@ -96,7 +102,6 @@ public  class UrlController {
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
         var urlChecks = UrlCheckRepository.getEntities(id);
-        url.setUrlChecks(urlChecks);
 
         final long urlPerPage = 5;
 
@@ -104,7 +109,7 @@ public  class UrlController {
                 ? "active" : "disabled";
         String conditionBack = pageNumber > 1 ? "active" : "disabled";
 
-        var page = new UrlPage(url, pageNumber, conditionNext, conditionBack);
+        var page = new UrlPage(url, pageNumber, urlChecks, conditionNext, conditionBack);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));

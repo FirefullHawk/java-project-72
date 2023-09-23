@@ -2,6 +2,7 @@ package hexlet.code.dto.urls;
 
 import hexlet.code.dto.BasePage;
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class   UrlsPage extends BasePage {
     private List<Url> urls;
     private long pageNumber;
+    private List<UrlCheck> lastCheck;
     private String conditionNext;
     private String conditionBack;
 }

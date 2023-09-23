@@ -1,6 +1,6 @@
 
 @import hexlet.code.dto.urls.UrlPage
-@import hexlet.code.util.NamedRoutes
+@import hexlet.code.utils.NamedRoutes
 
 @param UrlPage page
 
@@ -43,8 +43,8 @@ content = @`
       <th class="col-2">Дата проверки</th>
       </thead>
       <tbody>
-      @if(page.getUrl().getUrlChecks() != null)
-        @for(var urlCheck : page.getUrl().getUrlChecks())
+      @if(page.getUrlChecks() != null)
+        @for(var urlCheck : page.getUrlChecks())
           <tr>
             <td>${urlCheck.getId()}</td>
             <td>${urlCheck.getStatusCode()}</td>

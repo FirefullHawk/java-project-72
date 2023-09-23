@@ -10,7 +10,7 @@ import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.util.NamedRoutes;
+import hexlet.code.utils.NamedRoutes;
 
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
@@ -86,9 +86,7 @@ public final class      App {
             }
         });
 
-        app.before(ctx -> {
-            ctx.contentType("text/html; charset=utf-8");
-        });
+        app.before(ctx -> ctx.contentType("text/html; charset=utf-8"));
 
         app.get(NamedRoutes.rootPath(), RootController::index);
         app.get(NamedRoutes.urlsPath(), UrlController::showUrls);

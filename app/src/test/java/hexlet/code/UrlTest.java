@@ -3,8 +3,10 @@ package hexlet.code;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
+import io.javalin.http.NotFoundResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.MockResponse;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,10 +27,6 @@ public final class UrlTest {
     private static MockWebServer mockServer;
 
     private static Javalin app;
-
-    private static final Integer GOOD_RESPONSE_CODE = 200;
-
-    private static final Integer BAD_RESPONSE_CODE = 404;
 
     private static Path getAbsolutePath(String filePath) {
         return Paths.get(filePath).toAbsolutePath().normalize();
@@ -63,16 +61,19 @@ public final class UrlTest {
 
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/");
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
         });
     }
 
     @Test
     void testUrlPage() throws Exception {
-
         JavalinTest.test(app, (server, client) -> {
+            var url = new Url("http://www.example.com", Timestamp.valueOf(LocalDateTime.now()));
+            UrlRepository.save(url);
+
             var response = client.get("/urls");
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
+            assertThat(response.body().string()).contains("http://www.example.com");
         });
     }
 
@@ -82,7 +83,8 @@ public final class UrlTest {
         UrlRepository.save(url);
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/" + url.getId());
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
+            assertThat(response.body().string()).contains("http://www.example.com");
         });
     }
 
@@ -91,10 +93,15 @@ public final class UrlTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=http://www.example.com";
             var response = client.post("/urls", requestBody);
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
-            assertThat(response.body().string()).contains("http://www.example.com");
-        });
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
+            var url = UrlRepository.find(1L)
+                    .orElseThrow(() -> new NotFoundResponse("Url not found"));
 
+            String id = String.valueOf(url.getId());
+            String name = url.getName();
+
+            assertThat(response.body().string()).contains(id, name);
+        });
         assertThat(UrlRepository.getEntities()).hasSize(1);
     }
 
@@ -102,7 +109,7 @@ public final class UrlTest {
     void testUrlNotFound() throws Exception {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/999999");
-            assertThat(response.code()).isEqualTo(BAD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_NOT_FOUND);
         });
     }
 
@@ -115,7 +122,7 @@ public final class UrlTest {
 
         JavalinTest.test(app, (server, client) -> {
             var response = client.post("/urls/1/checks");
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
             assertThat(response.body().string()).contains("Example Domain");
         });
 
@@ -131,7 +138,7 @@ public final class UrlTest {
 
         JavalinTest.test(app, (server, client) -> {
             var response = client.post("/urls/1/checks");
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
             assertThat(response.body().string()).doesNotContain("Example Domain");
         });
 
@@ -147,7 +154,7 @@ public final class UrlTest {
 
         JavalinTest.test(app, (server, client) -> {
             var response = client.post("/urls/1/checks");
-            assertThat(response.code()).isEqualTo(GOOD_RESPONSE_CODE);
+            assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
             assertThat(response.body().string()).doesNotContain("Example Domain");
         });
 
