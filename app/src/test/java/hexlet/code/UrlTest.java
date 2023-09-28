@@ -51,6 +51,12 @@ public final class UrlTest {
         mockServer.start();
     }
 
+    @AfterAll
+    public static void afterAll() throws IOException {
+        app.stop();
+        mockServer.shutdown();
+    }
+
     @BeforeEach
     public void setUp() throws Exception {
         app = App.getApp();
@@ -123,7 +129,14 @@ public final class UrlTest {
         JavalinTest.test(app, (server, client) -> {
             var response = client.post("/urls/1/checks");
             assertThat(response.code()).isEqualTo(HttpStatus.SC_OK);
-            assertThat(response.body().string()).contains("Example Domain");
+
+            var urlCheck = UrlCheckRepository.getLastCheck(1L);
+
+            String id = String.valueOf(urlCheck.getId());
+            String title = urlCheck.getTitle();
+            String statusCode = String.valueOf(urlCheck.getStatusCode());
+
+            assertThat(response.body().string()).contains(id, title, statusCode);
         });
 
         assertThat(UrlCheckRepository.getEntities(1L)).hasSize(1);
@@ -159,11 +172,5 @@ public final class UrlTest {
         });
 
         assertThat(UrlCheckRepository.getEntities(1L)).hasSize(0);
-    }
-
-    @AfterAll
-    public static void afterAll() throws IOException {
-        app.stop();
-        mockServer.shutdown();
     }
 }
