@@ -39,25 +39,27 @@ public  class UrlController {
                     .trim();
 
         String normalizeUrl = "";
+        boolean urlRight = false;
 
         try {
             var urlToValidate = new URI(name).toURL();
             normalizeUrl = urlBuild(urlToValidate);
+            urlRight = true;
         } catch (MalformedURLException | URISyntaxException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());
         }
 
-        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        var url = new Url(normalizeUrl, createdAt);
+        if (!UrlRepository.existsByName(normalizeUrl) && urlRight) {
+            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            var url = new Url(normalizeUrl, createdAt);
 
-        if (!UrlRepository.existsByName(normalizeUrl)) {
             UrlRepository.save(url);
             ctx.sessionAttribute("flash", "Сайт успешно добавлен");
             ctx.sessionAttribute("flash-type", "success");
             ctx.redirect(NamedRoutes.urlsPath());
-        } else {
+        } else if (UrlRepository.existsByName(normalizeUrl) && urlRight) {
             ctx.sessionAttribute("flash", "Сайт уже добавлен");
             ctx.sessionAttribute("flash-type", "info");
             ctx.redirect(NamedRoutes.urlsPath());
