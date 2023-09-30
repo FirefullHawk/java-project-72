@@ -50,7 +50,7 @@ public  class UrlController {
             return;
         }
 
-        if (!UrlRepository.existsByName(normalizeUrl) && urlRight) {
+        if (!UrlRepository.existsByName(normalizeUrl)) {
             Timestamp createdAt = new Timestamp(System.currentTimeMillis());
             var url = new Url(normalizeUrl, createdAt);
 
@@ -58,7 +58,7 @@ public  class UrlController {
             ctx.sessionAttribute("flash", "Сайт успешно добавлен");
             ctx.sessionAttribute("flash-type", "success");
             ctx.redirect(NamedRoutes.urlsPath());
-        } else if (UrlRepository.existsByName(normalizeUrl) && urlRight) {
+        } else {
             ctx.sessionAttribute("flash", "Сайт уже добавлен");
             ctx.sessionAttribute("flash-type", "info");
             ctx.redirect(NamedRoutes.urlsPath());
