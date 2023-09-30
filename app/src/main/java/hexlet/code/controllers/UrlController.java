@@ -39,16 +39,15 @@ public  class UrlController {
                     .trim();
 
         String normalizeUrl = "";
-        boolean urlRight = false;
 
         try {
             var urlToValidate = new URI(name).toURL();
             normalizeUrl = urlBuild(urlToValidate);
-            urlRight = true;
         } catch (MalformedURLException | URISyntaxException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());
+            return;
         }
 
         if (!UrlRepository.existsByName(normalizeUrl) && urlRight) {
