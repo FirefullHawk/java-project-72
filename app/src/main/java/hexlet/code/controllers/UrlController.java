@@ -38,12 +38,12 @@ public  class UrlController {
                     .toLowerCase()
                     .trim();
 
-        String normalizeUrl = "";
+        String normalizeUrl;
 
         try {
             var urlToValidate = new URI(name).toURL();
             normalizeUrl = urlBuild(urlToValidate);
-        } catch (MalformedURLException | URISyntaxException e) {
+        } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect(NamedRoutes.rootPath());
