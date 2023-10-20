@@ -30,5 +30,6 @@ Before you can build this project, you must install and configure the following 
 ## Start application:
 Build application
 > make build
+
 Run application on localhost (default port - 7070)
 > make run-dist
