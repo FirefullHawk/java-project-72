@@ -16,9 +16,6 @@ install:
 start-dist:
 	APP_ENV=production ./build/install/app/bin/app
 
-generate-migrations:
-	./gradlew generateMigrations
-
 lint:
 	./gradlew checkstyleMain checkstyleTest
 
